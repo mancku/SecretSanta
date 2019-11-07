@@ -89,7 +89,7 @@ namespace SecretSanta_Test
         [TestMethod]
         public void Helpers_ToDictionary_ReturnsDictionary()
         {
-            var pairs = this.GetEnumKVPairs();
+            var pairs = this.GetEnumKVPairs().ToList();
             var result = pairs.ToDictionary();
 
             Assert.AreEqual(pairs.Count(), result.Count);
@@ -119,7 +119,7 @@ namespace SecretSanta_Test
         public void Helpers_MergeToKeyValuePair_ReturnsValidIEnumerable()
         {
             var numberList = new List<int>() { 1, 2, 3, 4, 5 };
-            var result = numberList.MergeToKeyValuePair(numberList);
+            var result = numberList.MergeToKeyValuePair(numberList).ToList();
 
             Assert.AreEqual(numberList.Count, result.Count(), "Zipped list should eb same length");
 
