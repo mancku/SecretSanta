@@ -5,14 +5,14 @@ using System.Linq;
 
 namespace SecretSanta
 {
-    public static class SecretSantaGenerator
+    public class SecretSantaGenerator
     {
-        public static IDictionary<T, T> Generate<T>(IList<T> participants)
+        public IDictionary<T, T> Generate<T>(IList<T> participants)
         {
-            return Generate(participants, new Dictionary<T, T>());
+            return this.Generate(participants, new Dictionary<T, T>());
         }
 
-        public static IDictionary<T, T> Generate<T>(IList<T> participants, IDictionary<T, T> bannedPairings)
+        public IDictionary<T, T> Generate<T>(IList<T> participants, IDictionary<T, T> bannedPairings)
         {
             var to = participants.GetShuffle();
 
@@ -20,7 +20,7 @@ namespace SecretSanta
             {
                 var result = to.ZipToKV(from);
 
-                if (PairingIsValid(bannedPairings, result))
+                if (this.PairingIsValid(bannedPairings, result))
                 {
                     return result.ToDictionary();
                 }
@@ -29,7 +29,7 @@ namespace SecretSanta
             throw new ApplicationException("No valid santa list can be generated");
         }
 
-        private static bool PairingIsValid<T>(IDictionary<T, T> bannedPairings, IEnumerable<KeyValuePair<T, T>> result)
+        private bool PairingIsValid<T>(IDictionary<T, T> bannedPairings, IEnumerable<KeyValuePair<T, T>> result)
         {
             foreach (var r in result)
             {
@@ -41,12 +41,12 @@ namespace SecretSanta
             return true;
         }
 
-        public static IEnumerable<IDictionary<T, T>> GenerateAll<T>(IList<T> participants)
+        public IEnumerable<IDictionary<T, T>> GenerateAll<T>(IList<T> participants)
         {
-            return GenerateAll(participants, new Dictionary<T, T>());
+            return this.GenerateAll(participants, new Dictionary<T, T>());
         }
 
-        public static IEnumerable<IDictionary<T, T>> GenerateAll<T>(IList<T> participants, IDictionary<T, T> bannedPairings)
+        public IEnumerable<IDictionary<T, T>> GenerateAll<T>(IList<T> participants, IDictionary<T, T> bannedPairings)
         {
             var to = participants.GetShuffle();
 
@@ -54,7 +54,7 @@ namespace SecretSanta
             {
                 var result = to.ZipToKV(from);
 
-                if (PairingIsValid(bannedPairings, result))
+                if (this.PairingIsValid(bannedPairings, result))
                 {
                     yield return result.ToDictionary();
                 }

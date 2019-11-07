@@ -5,10 +5,11 @@ using System.Collections.Generic;
 namespace SecretSanta_Test
 {
     [TestClass]
-    public class SecretSantaTest
+    public class SecretSantaGeneratorTest
     {
         private IList<Participant> participants;
         private IDictionary<Participant, Participant> banned;
+        private SecretSantaGenerator secretSantaGenerator;
 
         [TestInitialize]
         public void SetUp()
@@ -26,12 +27,14 @@ namespace SecretSanta_Test
                 { this.participants[0], this.participants[2] },
                 { this.participants[1], this.participants[3] }
             };
+
+            this.secretSantaGenerator = new SecretSantaGenerator();
         }
 
         [TestMethod]
         public void SecretSanta_Generate_ReturnsASet()
         {
-            var result = SecretSantaGenerator.Generate(this.participants);
+            var result = this.secretSantaGenerator.Generate(this.participants);
 
             this.CheckForValidSantaList(result);
         }
@@ -57,7 +60,7 @@ namespace SecretSanta_Test
         [TestMethod]
         public void SecretSanta_GernerateAll_ReturnsAllSets()
         {
-            foreach (var list in SecretSantaGenerator.GenerateAll(this.participants))
+            foreach (var list in this.secretSantaGenerator.GenerateAll(this.participants))
             {
                 this.CheckForValidSantaList(list);
             }
@@ -66,7 +69,7 @@ namespace SecretSanta_Test
         [TestMethod]
         public void SecretSanta_Generate_WithBanned_ReturnsASet()
         {
-            var result = SecretSantaGenerator.Generate(this.participants, this.banned);
+            var result = this.secretSantaGenerator.Generate(this.participants, this.banned);
 
             this.CheckForValidSantaList(result);
             this.CheckResultHasNoBannedPair(result);
@@ -83,7 +86,7 @@ namespace SecretSanta_Test
         [TestMethod]
         public void SecretSanta_GenerateAll_WithBanned_ReturnsAllSets()
         {
-            var result = SecretSantaGenerator.GenerateAll(this.participants, this.banned);
+            var result = this.secretSantaGenerator.GenerateAll(this.participants, this.banned);
 
             foreach (var list in result)
             {
