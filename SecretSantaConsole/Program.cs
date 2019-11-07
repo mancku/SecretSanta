@@ -52,7 +52,8 @@ namespace SecretSantaConsole
                     throw new ArgumentException("Invalid number of arguments passed");
             }
 
-            var santasList = SecretSantaGenerator.Generate(participants, bannedPairs);
+            var secretSantaGenerator = new SecretSantaGenerator();
+            var santasList = secretSantaGenerator.Generate(participants, bannedPairs);
 
             WriteDictFile(outputFile, santasList);
         }
