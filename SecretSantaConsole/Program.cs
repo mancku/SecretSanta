@@ -35,8 +35,8 @@ namespace SecretSantaConsole
             IList<string> participants = ReadFile(args[0]);
 
             IDictionary<string, string> bannedPairs = new Dictionary<string, string>();
-            var outputFile = string.Empty;
 
+            string outputFile;
             switch (args.Length)
             {
                 case 2:
