@@ -18,7 +18,7 @@ namespace SecretSanta
 
             foreach (var from in participants.GetShuffle().GetPermutations())
             {
-                var result = to.ZipToKV(from);
+                var result = to.ZipToKV(from).ToList();
 
                 if (this.PairingIsValid(bannedPairings, result))
                 {
@@ -31,14 +31,7 @@ namespace SecretSanta
 
         private bool PairingIsValid<T>(IDictionary<T, T> bannedPairings, IEnumerable<KeyValuePair<T, T>> result)
         {
-            foreach (var r in result)
-            {
-                if (r.Key.Equals(r.Value) || bannedPairings.Contains(r))
-                {
-                    return false;
-                }
-            }
-            return true;
+            return result.All(r => !r.Key.Equals(r.Value) && !bannedPairings.Contains(r));
         }
 
         public IEnumerable<IDictionary<T, T>> GenerateAll<T>(IList<T> participants)
@@ -52,7 +45,7 @@ namespace SecretSanta
 
             foreach (var from in participants.GetShuffle().GetPermutations())
             {
-                var result = to.ZipToKV(from);
+                var result = to.ZipToKV(from).ToList();
 
                 if (this.PairingIsValid(bannedPairings, result))
                 {
