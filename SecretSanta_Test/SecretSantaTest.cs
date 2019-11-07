@@ -1,22 +1,19 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SecretSanta;
+using System.Collections.Generic;
 
 namespace SecretSanta_Test
 {
     [TestClass]
     public class SecretSantaTest
     {
-        IList<Participant> participants;
-        IDictionary<Participant, Participant> banned;
+        private IList<Participant> participants;
+        private IDictionary<Participant, Participant> banned;
 
         [TestInitialize]
         public void SetUp()
         {
-            participants = new List<Participant>()
+            this.participants = new List<Participant>()
             {
                 new Participant() { FirstName = "A" },
                 new Participant() { FirstName = "B" },
@@ -24,29 +21,31 @@ namespace SecretSanta_Test
                 new Participant() { FirstName = "D" }
             };
 
-            banned = new Dictionary<Participant, Participant>();
-            banned.Add(participants[0], participants[2]);
-            banned.Add(participants[1], participants[3]);
+            this.banned = new Dictionary<Participant, Participant>
+            {
+                { this.participants[0], this.participants[2] },
+                { this.participants[1], this.participants[3] }
+            };
         }
 
         [TestMethod]
         public void SecretSanta_Generate_ReturnsASet()
         {
-            var result = SecretSantaGenerator.Generate(participants);
+            var result = SecretSantaGenerator.Generate(this.participants);
 
-            CheckForValidSantaList(result);
+            this.CheckForValidSantaList(result);
         }
 
         private void CheckForValidSantaList(IDictionary<Participant, Participant> santaList)
         {
             foreach (var sender in santaList.Keys)
             {
-                Assert.IsTrue(participants.Contains(sender), "A participant was not included as a gifter");
+                Assert.IsTrue(this.participants.Contains(sender), "A participant was not included as a gifter");
             }
 
             foreach (var reciever in santaList.Values)
             {
-                Assert.IsTrue(participants.Contains(reciever), "A participant was not included as a giftee");
+                Assert.IsTrue(this.participants.Contains(reciever), "A participant was not included as a giftee");
             }
 
             foreach (var pair in santaList)
@@ -58,24 +57,24 @@ namespace SecretSanta_Test
         [TestMethod]
         public void SecretSanta_GernerateAll_ReturnsAllSets()
         {
-            foreach (var list in SecretSantaGenerator.GenerateAll(participants))
+            foreach (var list in SecretSantaGenerator.GenerateAll(this.participants))
             {
-                CheckForValidSantaList(list);
+                this.CheckForValidSantaList(list);
             }
         }
 
         [TestMethod]
         public void SecretSanta_Generate_WithBanned_ReturnsASet()
         {
-            var result = SecretSantaGenerator.Generate(participants, banned);
+            var result = SecretSantaGenerator.Generate(this.participants, this.banned);
 
-            CheckForValidSantaList(result);
-            CheckResultHasNoBannedPair(result);
+            this.CheckForValidSantaList(result);
+            this.CheckResultHasNoBannedPair(result);
         }
 
         private void CheckResultHasNoBannedPair(IDictionary<Participant, Participant> result)
         {
-            foreach (var bannedPair in banned)
+            foreach (var bannedPair in this.banned)
             {
                 Assert.IsFalse(result.Contains(bannedPair));
             }
@@ -84,12 +83,12 @@ namespace SecretSanta_Test
         [TestMethod]
         public void SecretSanta_GenerateAll_WithBanned_ReturnsAllSets()
         {
-            var result = SecretSantaGenerator.GenerateAll(participants, banned);
+            var result = SecretSantaGenerator.GenerateAll(this.participants, this.banned);
 
             foreach (var list in result)
             {
-                CheckForValidSantaList(list);
-                CheckResultHasNoBannedPair(list);
+                this.CheckForValidSantaList(list);
+                this.CheckResultHasNoBannedPair(list);
             }
         }
     }

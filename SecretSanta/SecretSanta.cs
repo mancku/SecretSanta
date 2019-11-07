@@ -1,10 +1,7 @@
-﻿using System;
+﻿using SecretSanta.Extentions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using SecretSanta.Extentions;
 
 namespace SecretSanta
 {
@@ -24,7 +21,9 @@ namespace SecretSanta
                 var result = to.ZipToKV(from);
 
                 if (PairingIsValid(bannedPairings, result))
+                {
                     return result.ToDictionary();
+                }
             }
 
             throw new ApplicationException("No valid santa list can be generated");
@@ -56,7 +55,9 @@ namespace SecretSanta
                 var result = to.ZipToKV(from);
 
                 if (PairingIsValid(bannedPairings, result))
+                {
                     yield return result.ToDictionary();
+                }
             }
         }
     }

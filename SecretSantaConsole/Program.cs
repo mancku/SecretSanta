@@ -1,19 +1,17 @@
-﻿using System;
+﻿using SecretSanta;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
-using SecretSanta;
+using System.Linq;
 
 namespace SecretSantaConsole
 {
-    class Program
+    internal class Program
     {
         private const char DICT_FILE_SEPERATOR = ',';
-        private const string OUTPUT_DICT_SEPERATOR = " -> "; 
+        private const string OUTPUT_DICT_SEPERATOR = " -> ";
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             try
             {
@@ -37,7 +35,7 @@ namespace SecretSantaConsole
             IList<string> participants = ReadFile(args[0]);
 
             IDictionary<string, string> bannedPairs = new Dictionary<string, string>();
-            string outputFile = string.Empty;
+            var outputFile = string.Empty;
 
             switch (args.Length)
             {
