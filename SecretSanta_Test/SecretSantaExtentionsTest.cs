@@ -1,9 +1,7 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SecretSanta.Extentions;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-using SecretSanta.Extentions;
 
 namespace SecretSanta_Test
 {
@@ -15,22 +13,24 @@ namespace SecretSanta_Test
         [TestInitialize]
         public void SetUp()
         {
-            testList = new List<Participant>();
-            testList.Add(new Participant() { FirstName = "Name 1", LastName = "Last" });
-            testList.Add(new Participant() { FirstName = "Name 2", LastName = "Last" });
-            testList.Add(new Participant() { FirstName = "Name 3", LastName = "Last" });
-            testList.Add(new Participant() { FirstName = "Name 4", LastName = "Last" });
-            testList.Add(new Participant() { FirstName = "Name 5", LastName = "Last" });
+            this.testList = new List<Participant>
+            {
+                new Participant() { FirstName = "Name 1", LastName = "Last" },
+                new Participant() { FirstName = "Name 2", LastName = "Last" },
+                new Participant() { FirstName = "Name 3", LastName = "Last" },
+                new Participant() { FirstName = "Name 4", LastName = "Last" },
+                new Participant() { FirstName = "Name 5", LastName = "Last" }
+            };
         }
 
         [TestMethod]
         public void Helpers_GetShuffle_AllReturned_1000Tries()
         {
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000; i++)
             {
-                var result = testList.GetShuffle();
+                var result = this.testList.GetShuffle();
 
-                foreach (var a in testList)
+                foreach (var a in this.testList)
                 {
                     Assert.IsTrue(result.Contains(a));
                 }
@@ -40,39 +40,41 @@ namespace SecretSanta_Test
         [TestMethod]
         public void Helpers_GetPermutations_AllPermutationsReturned()
         {
-            var result = testList.GetPermutations().Count();
-            var expected = Factoral(testList.Count());
+            var result = this.testList.GetPermutations().Count();
+            var expected = this.Factoral(this.testList.Count());
 
-            Assert.AreEqual(expected, result, "There should be n! permutations, where n = {0}", testList.Count());
+            Assert.AreEqual(expected, result, "There should be n! permutations, where n = {0}", this.testList.Count());
         }
 
         private int Factoral(int n)
         {
             if (n <= 1)
+            {
                 return 1;
+            }
 
-            return n * Factoral(n - 1);
+            return n * this.Factoral(n - 1);
         }
 
         [TestMethod]
         public void Helpers_GetPermutations_AllUnique()
         {
-            var result = testList.GetPermutations().ToList();
+            var result = this.testList.GetPermutations().ToList();
 
-            for (int current = 0; current < result.Count; current++)
+            for (var current = 0; current < result.Count; current++)
             {
-                for (int compare = current + 1; compare < result.Count; compare++)
+                for (var compare = current + 1; compare < result.Count; compare++)
                 {
                     Assert.AreEqual(result[current].Count, result[compare].Count, "All lists should have the same number of elements");
-                    CheckOrderingIsDifferent(result[current], result[compare]);
+                    this.CheckOrderingIsDifferent(result[current], result[compare]);
                 }
             }
         }
 
         private void CheckOrderingIsDifferent<T>(IList<T> first, IList<T> second)
         {
-            bool differenceDetected = false;
-            for (int i = 0; i < first.Count; i++)
+            var differenceDetected = false;
+            for (var i = 0; i < first.Count; i++)
             {
                 if (first[i].Equals(second[i]))
                 {
@@ -87,7 +89,7 @@ namespace SecretSanta_Test
         [TestMethod]
         public void Helpers_ToDictionary_ReturnsDictionary()
         {
-            var pairs = GetEnumKVPairs();
+            var pairs = this.GetEnumKVPairs();
             var result = pairs.ToDictionary();
 
             Assert.AreEqual(pairs.Count(), result.Count);
@@ -100,15 +102,15 @@ namespace SecretSanta_Test
 
         private IEnumerable<KeyValuePair<Participant, Participant>> GetEnumKVPairs()
         {
-            for (int i = 0; i < testList.Count; i++)
+            for (var i = 0; i < this.testList.Count; i++)
             {
-                if (i < testList.Count - 1)
+                if (i < this.testList.Count - 1)
                 {
-                    yield return new KeyValuePair<Participant, Participant>(testList[i], testList[i + 1]);
+                    yield return new KeyValuePair<Participant, Participant>(this.testList[i], this.testList[i + 1]);
                 }
                 else
                 {
-                    yield return new KeyValuePair<Participant, Participant>(testList[i], testList[0]);
+                    yield return new KeyValuePair<Participant, Participant>(this.testList[i], this.testList[0]);
                 }
             }
         }
