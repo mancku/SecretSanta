@@ -114,10 +114,10 @@ namespace SecretSanta_Test
         }
 
         [TestMethod]
-        public void Helpers_ZipToKV_ReturnsValidZip()
+        public void Helpers_MergeToKeyValuePair_ReturnsValidIEnumerable()
         {
             var numberList = new List<int>() { 1, 2, 3, 4, 5 };
-            var result = numberList.ZipToKV(numberList);
+            var result = numberList.MergeToKeyValuePair(numberList);
 
             Assert.AreEqual(numberList.Count, result.Count(), "Zipped list should eb same length");
 

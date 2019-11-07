@@ -8,7 +8,7 @@ namespace SecretSanta.Extentions
     {
         public static IList<T> GetShuffle<T>(this IList<T> source)
         {
-            var rand = new Random();
+            var rand = new Random(DateTime.Now.Millisecond);
             return source.OrderBy(x => rand.Next()).ToList();
         }
 
@@ -32,11 +32,11 @@ namespace SecretSanta.Extentions
                     yield return subPerm;
                 }
 
-                source.RotateRight();
+                source.MoveLastItemToFirstPosition();
             }
         }
 
-        private static void RotateRight<T>(this IList<T> source)
+        private static void MoveLastItemToFirstPosition<T>(this IList<T> source)
         {
             var rotateBuffer = source[source.Count - 1];
             source.RemoveAt(source.Count - 1);
@@ -45,18 +45,12 @@ namespace SecretSanta.Extentions
 
         public static IDictionary<K, V> ToDictionary<K, V>(this IEnumerable<KeyValuePair<K, V>> source)
         {
-            var dict = new Dictionary<K, V>();
-            foreach (var pair in source)
-            {
-                dict[pair.Key] = pair.Value;
-            }
-
-            return dict;
+            return source.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
-        public static IEnumerable<KeyValuePair<K, V>> ZipToKV<K, V>(this IEnumerable<K> left, IEnumerable<V> right)
+        public static IEnumerable<KeyValuePair<K, V>> MergeToKeyValuePair<K, V>(this IEnumerable<K> keys, IEnumerable<V> values)
         {
-            return left.Zip(right, (l, r) => new KeyValuePair<K, V>(l, r));
+            return keys.Zip(values, (key, value) => new KeyValuePair<K, V>(key, value));
         }
     }
 }
