@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SecretSanta.Extentions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,19 +9,19 @@ namespace SecretSanta_Test
     [TestClass]
     public class SecretSantaExtentionsTest
     {
+
+        private readonly Random Randomizer = new Random(DateTime.Now.Millisecond);
+
         private IList<Participant> testList;
 
         [TestInitialize]
         public void SetUp()
         {
-            this.testList = new List<Participant>
+            this.testList = new List<Participant>();
+            for (var i = 0; i < this.Randomizer.Next(5, 9); i++)
             {
-                new Participant() { FirstName = "Name 1", LastName = "Last" },
-                new Participant() { FirstName = "Name 2", LastName = "Last" },
-                new Participant() { FirstName = "Name 3", LastName = "Last" },
-                new Participant() { FirstName = "Name 4", LastName = "Last" },
-                new Participant() { FirstName = "Name 5", LastName = "Last" }
-            };
+                this.testList.Add(new Participant { FirstName = $"{Faker.Name.First()} {i}", LastName = Faker.Name.Last() });
+            }
         }
 
         [TestMethod]
@@ -118,14 +119,21 @@ namespace SecretSanta_Test
         [TestMethod]
         public void Helpers_MergeToKeyValuePair_ReturnsValidIEnumerable()
         {
-            var numberList = new List<int>() { 1, 2, 3, 4, 5 };
-            var result = numberList.MergeToKeyValuePair(numberList).ToList();
-
-            Assert.AreEqual(numberList.Count, result.Count(), "Zipped list should eb same length");
-
-            foreach (var pair in result)
+            var numberListKeys = new List<int>();
+            var numberListValues = new List<int>();
+            for (var i = 0; i < this.Randomizer.Next(5, 10); i++)
             {
-                Assert.AreEqual(pair.Key, pair.Value, "Values did not match");
+                numberListKeys.Add(this.Randomizer.Next(1, 10));
+                numberListValues.Add(this.Randomizer.Next(1, 10));
+            }
+            var result = numberListKeys.MergeToKeyValuePair(numberListValues).ToList();
+
+            Assert.AreEqual(numberListKeys.Count, numberListValues.Count, result.Count(), "Zipped list should eb same length");
+
+            for (var i = 0; i < result.Count; i++)
+            {
+                Assert.AreEqual(result[i].Key, numberListKeys[i], "Values did not match");
+                Assert.AreEqual(result[i].Value, numberListValues[i], "Values did not match");
             }
         }
     }
