@@ -1,6 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SecretSanta;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SecretSanta_Test
 {
@@ -10,22 +12,27 @@ namespace SecretSanta_Test
         private IList<Participant> participants;
         private IDictionary<Participant, Participant> banned;
         private SecretSantaGenerator secretSantaGenerator;
+        private readonly Random Randomizer = new Random(DateTime.Now.Millisecond);
 
         [TestInitialize]
         public void SetUp()
         {
-            this.participants = new List<Participant>()
+            this.participants = new List<Participant>();
+            for (var i = 0; i < this.Randomizer.Next(5, 9); i++)
             {
-                new Participant() { FirstName = "A" },
-                new Participant() { FirstName = "B" },
-                new Participant() { FirstName = "C" },
-                new Participant() { FirstName = "D" }
-            };
+                this.participants.Add(new Participant
+                {
+                    FirstName = $"{Faker.Name.First()} {i}",
+                    LastName = Faker.Name.Last(),
+                    EMailAddress = Faker.Internet.FreeEmail(),
+                    PhoneNumber = Faker.Phone.Number()
+                });
+            }
 
             this.banned = new Dictionary<Participant, Participant>
             {
-                { this.participants[0], this.participants[2] },
-                { this.participants[1], this.participants[3] }
+                {this.participants[0], this.participants[2]},
+                {this.participants[1], this.participants[3]}
             };
 
             this.secretSantaGenerator = new SecretSantaGenerator();
@@ -92,6 +99,23 @@ namespace SecretSanta_Test
             {
                 this.CheckForValidSantaList(list);
                 this.CheckResultHasNoBannedPair(list);
+            }
+        }
+
+        [TestMethod]
+        public void SecretSanta_Excluded_Is_Working()
+        {
+            var excludedMutualPairing = this.secretSantaGenerator
+                .GenerateAll(this.participants, true)
+                .ToList();
+
+            foreach (var dictionary in excludedMutualPairing)
+            {
+                foreach (var kvp in dictionary)
+                {
+                    var isMutualPairing = dictionary.Any(x => x.Key.Equals(kvp.Value) && x.Value.Equals(kvp.Key));
+                    Assert.IsFalse(isMutualPairing);
+                }
             }
         }
     }
