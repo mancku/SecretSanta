@@ -7,12 +7,12 @@ namespace SecretSanta
 {
     public class SecretSantaGenerator : ISecretSantaGenerator
     {
-        public IDictionary<T, T> Generate<T>(IList<T> participants, bool excludeMutualPairing = false)
+        public IDictionary<T, T> Generate<T>(IEnumerable<T> participants, bool excludeMutualPairing = false)
         {
             return this.Generate(participants, new Dictionary<T, T>(), excludeMutualPairing);
         }
 
-        public IDictionary<T, T> Generate<T>(IList<T> participants, IDictionary<T, T> bannedPairings, bool excludeMutualPairing = false)
+        public IDictionary<T, T> Generate<T>(IEnumerable<T> participants, IDictionary<T, T> bannedPairings, bool excludeMutualPairing = false)
         {
             var results = this.GenerateResults(participants, bannedPairings, true, excludeMutualPairing);
             try
@@ -25,19 +25,20 @@ namespace SecretSanta
             }
         }
 
-        public IEnumerable<IDictionary<T, T>> GenerateAll<T>(IList<T> participants, bool excludeMutualPairing = false)
+        public IEnumerable<IDictionary<T, T>> GenerateAll<T>(IEnumerable<T> participants, bool excludeMutualPairing = false)
         {
             return this.GenerateAll(participants, new Dictionary<T, T>(), excludeMutualPairing);
         }
 
-        public IEnumerable<IDictionary<T, T>> GenerateAll<T>(IList<T> participants, IDictionary<T, T> bannedPairings, bool excludeMutualPairing = false)
+        public IEnumerable<IDictionary<T, T>> GenerateAll<T>(IEnumerable<T> participants, IDictionary<T, T> bannedPairings, bool excludeMutualPairing = false)
         {
             return this.GenerateResults(participants, bannedPairings, false, excludeMutualPairing);
         }
 
-        private IEnumerable<IDictionary<T, T>> GenerateResults<T>(IList<T> participants, IDictionary<T, T> bannedPairings,
+        private IEnumerable<IDictionary<T, T>> GenerateResults<T>(IEnumerable<T> participants, IDictionary<T, T> bannedPairings,
             bool getJustOneResult, bool excludeMutualPairing = false)
         {
+            participants = participants.ToList();
             var to = participants.GetShuffle();
             foreach (var permutation in participants.GetShuffle().GetPermutations())
             {

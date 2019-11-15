@@ -4,11 +4,11 @@ namespace SecretSanta
 {
     public interface ISecretSantaGenerator
     {
-        IDictionary<T, T> Generate<T>(IList<T> participants, bool excludeMutualPairing = false);
-        IDictionary<T, T> Generate<T>(IList<T> participants, IDictionary<T, T> bannedPairings,
+        IDictionary<T, T> Generate<T>(IEnumerable<T> participants, bool excludeMutualPairing = false);
+        IDictionary<T, T> Generate<T>(IEnumerable<T> participants, IDictionary<T, T> bannedPairings,
             bool excludeMutualPairing = false);
-        IEnumerable<IDictionary<T, T>> GenerateAll<T>(IList<T> participants, bool excludeMutualPairing = false);
-        IEnumerable<IDictionary<T, T>> GenerateAll<T>(IList<T> participants, IDictionary<T, T> bannedPairings,
+        IEnumerable<IDictionary<T, T>> GenerateAll<T>(IEnumerable<T> participants, bool excludeMutualPairing = false);
+        IEnumerable<IDictionary<T, T>> GenerateAll<T>(IEnumerable<T> participants, IDictionary<T, T> bannedPairings,
             bool excludeMutualPairing = false);
     }
 }
