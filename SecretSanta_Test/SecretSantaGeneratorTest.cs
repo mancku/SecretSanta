@@ -7,37 +7,8 @@ using System.Linq;
 namespace SecretSanta_Test
 {
     [TestClass]
-    public class SecretSantaGeneratorTest
+    public class SecretSantaGeneratorTest : BaseSecretSantaTest
     {
-        private IList<Participant> participants;
-        private IDictionary<Participant, Participant> banned;
-        private SecretSantaGenerator secretSantaGenerator;
-        private readonly Random Randomizer = new Random(DateTime.Now.Millisecond);
-
-        [TestInitialize]
-        public void SetUp()
-        {
-            this.participants = new List<Participant>();
-            for (var i = 0; i < this.Randomizer.Next(5, 9); i++)
-            {
-                this.participants.Add(new Participant
-                {
-                    FirstName = $"{Faker.Name.First()} {i}",
-                    LastName = Faker.Name.Last(),
-                    EMailAddress = Faker.Internet.FreeEmail(),
-                    PhoneNumber = Faker.Phone.Number()
-                });
-            }
-
-            this.banned = new Dictionary<Participant, Participant>
-            {
-                {this.participants[0], this.participants[2]},
-                {this.participants[1], this.participants[3]}
-            };
-
-            this.secretSantaGenerator = new SecretSantaGenerator();
-        }
-
         [TestMethod]
         public void SecretSanta_Generate_ReturnsASet()
         {
@@ -116,6 +87,10 @@ namespace SecretSanta_Test
             {
                 Assert.AreNotEqual(pair.Key, pair.Value, "A participant should never have to gift to themselves");
             }
+        }
+
+        protected override void SpecificTestSetup()
+        {
         }
     }
 }

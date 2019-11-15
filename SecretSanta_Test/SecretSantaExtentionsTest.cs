@@ -7,35 +7,18 @@ using System.Linq;
 namespace SecretSanta_Test
 {
     [TestClass]
-    public class SecretSantaExtentionsTest
+    public class SecretSantaExtentionsTest : BaseSecretSantaTest
     {
-        private readonly Random Randomizer = new Random(DateTime.Now.Millisecond);
-        private IList<Participant> testList;
-
-        [TestInitialize]
-        public void SetUp()
-        {
-            this.testList = new List<Participant>();
-            for (var i = 0; i < this.Randomizer.Next(5, 9); i++)
-            {
-                this.testList.Add(new Participant
-                {
-                    FirstName = $"{Faker.Name.First()} {i}",
-                    LastName = Faker.Name.Last(),
-                    EMailAddress = Faker.Internet.FreeEmail(),
-                    PhoneNumber = Faker.Phone.Number()
-                });
-            }
-        }
+        protected IDictionary<Participant, Participant> banned;
 
         [TestMethod]
         public void Helpers_GetShuffle_AllReturned_1000Tries()
         {
             for (var i = 0; i < 1000; i++)
             {
-                var result = this.testList.GetShuffle();
+                var result = this.participants.GetShuffle();
 
-                foreach (var a in this.testList)
+                foreach (var a in this.participants)
                 {
                     Assert.IsTrue(result.Contains(a));
                 }
@@ -45,16 +28,16 @@ namespace SecretSanta_Test
         [TestMethod]
         public void Helpers_GetPermutations_AllPermutationsReturned()
         {
-            var result = this.testList.GetPermutations().Count();
-            var expected = this.Factoral(this.testList.Count());
+            var result = this.participants.GetPermutations().Count();
+            var expected = this.Factoral(this.participants.Count());
 
-            Assert.AreEqual(expected, result, "There should be n! permutations, where n = {0}", this.testList.Count());
+            Assert.AreEqual(expected, result, "There should be n! permutations, where n = {0}", this.participants.Count());
         }
 
         [TestMethod]
         public void Helpers_GetPermutations_AllUnique()
         {
-            var result = this.testList.GetPermutations().ToList();
+            var result = this.participants.GetPermutations().ToList();
 
             for (var currentIndex = 0; currentIndex < result.Count; currentIndex++)
             {
@@ -111,15 +94,15 @@ namespace SecretSanta_Test
 
         private IEnumerable<KeyValuePair<Participant, Participant>> GetEnumKVPairs()
         {
-            for (var i = 0; i < this.testList.Count; i++)
+            for (var i = 0; i < this.participants.Count; i++)
             {
-                if (i < this.testList.Count - 1)
+                if (i < this.participants.Count - 1)
                 {
-                    yield return new KeyValuePair<Participant, Participant>(this.testList[i], this.testList[i + 1]);
+                    yield return new KeyValuePair<Participant, Participant>(this.participants[i], this.participants[i + 1]);
                 }
                 else
                 {
-                    yield return new KeyValuePair<Participant, Participant>(this.testList[i], this.testList[0]);
+                    yield return new KeyValuePair<Participant, Participant>(this.participants[i], this.participants[0]);
                 }
             }
         }
@@ -132,6 +115,15 @@ namespace SecretSanta_Test
             }
 
             return n * this.Factoral(n - 1);
+        }
+
+        protected override void SpecificTestSetup()
+        {
+            this.banned = new Dictionary<Participant, Participant>
+            {
+                {this.participants[0], this.participants[2]},
+                {this.participants[1], this.participants[3]}
+            };
         }
     }
 }
