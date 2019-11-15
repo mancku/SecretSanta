@@ -39,14 +39,13 @@ namespace SecretSanta
             bool getJustOneResult, bool excludeMutualPairing = false)
         {
             var to = participants.GetShuffle();
-
-            foreach (var from in participants.GetShuffle().GetPermutations())
+            foreach (var permutation in participants.GetShuffle().GetPermutations())
             {
-                var result = to.MergeToKeyValuePair(from).ToList();
+                var permutationsDictionary = to.MergeToKeyValuePair(permutation).ToDictionary();
 
-                if (this.PairingIsValid(bannedPairings, result, excludeMutualPairing))
+                if (this.PairingIsValid(bannedPairings, permutationsDictionary, excludeMutualPairing))
                 {
-                    yield return result.ToDictionary();
+                    yield return permutationsDictionary;
                     if (getJustOneResult)
                     {
                         yield break;
@@ -55,16 +54,19 @@ namespace SecretSanta
             }
         }
 
-        private bool PairingIsValid<T>(IDictionary<T, T> bannedPairings, IEnumerable<KeyValuePair<T, T>> result, bool excludeMutualPairing)
+        private bool PairingIsValid<T>(IDictionary<T, T> bannedPairings, IDictionary<T, T> permutations, bool excludeMutualPairing)
         {
-            return result.All(r => !r.Key.Equals(r.Value)
-                                   && !bannedPairings.Contains(r)
-                                   && !(excludeMutualPairing && this.IsMutualPairing(r)));
-        }
+            var result = !permutations.Any(r => r.Key.Equals(r.Value) || bannedPairings.Contains(r));
 
-        private bool IsMutualPairing<T>(KeyValuePair<T, T> r)
-        {
-            return r.Equals(new KeyValuePair<T, T>(r.Value, r.Key));
+            if (!excludeMutualPairing)
+            {
+                return result;
+            }
+
+            return !permutations
+                       .Select(kvp => permutations.Any(x => x.Key.Equals(kvp.Value) && x.Value.Equals(kvp.Key)))
+                       .Any(mutualPairing => mutualPairing)
+                   && result;
         }
     }
 }
