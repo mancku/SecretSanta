@@ -42,26 +42,7 @@ namespace SecretSanta_Test
         public void SecretSanta_Generate_ReturnsASet()
         {
             var result = this.secretSantaGenerator.Generate(this.participants);
-
             this.CheckForValidSantaList(result);
-        }
-
-        private void CheckForValidSantaList(IDictionary<Participant, Participant> santaList)
-        {
-            foreach (var sender in santaList.Keys)
-            {
-                Assert.IsTrue(this.participants.Contains(sender), "A participant was not included as a gifter");
-            }
-
-            foreach (var reciever in santaList.Values)
-            {
-                Assert.IsTrue(this.participants.Contains(reciever), "A participant was not included as a giftee");
-            }
-
-            foreach (var pair in santaList)
-            {
-                Assert.AreNotEqual(pair.Key, pair.Value, "A participant should never have to gift to themselves");
-            }
         }
 
         [TestMethod]
@@ -80,14 +61,6 @@ namespace SecretSanta_Test
 
             this.CheckForValidSantaList(result);
             this.CheckResultHasNoBannedPair(result);
-        }
-
-        private void CheckResultHasNoBannedPair(IDictionary<Participant, Participant> result)
-        {
-            foreach (var bannedPair in this.banned)
-            {
-                Assert.IsFalse(result.Contains(bannedPair));
-            }
         }
 
         [TestMethod]
@@ -116,6 +89,32 @@ namespace SecretSanta_Test
                     var isMutualPairing = dictionary.Any(x => x.Key.Equals(kvp.Value) && x.Value.Equals(kvp.Key));
                     Assert.IsFalse(isMutualPairing);
                 }
+            }
+        }
+
+        private void CheckResultHasNoBannedPair(IDictionary<Participant, Participant> result)
+        {
+            foreach (var bannedPair in this.banned)
+            {
+                Assert.IsFalse(result.Contains(bannedPair));
+            }
+        }
+
+        private void CheckForValidSantaList(IDictionary<Participant, Participant> santaList)
+        {
+            foreach (var sender in santaList.Keys)
+            {
+                Assert.IsTrue(this.participants.Contains(sender), "A participant was not included as a gifter");
+            }
+
+            foreach (var reciever in santaList.Values)
+            {
+                Assert.IsTrue(this.participants.Contains(reciever), "A participant was not included as a giftee");
+            }
+
+            foreach (var pair in santaList)
+            {
+                Assert.AreNotEqual(pair.Key, pair.Value, "A participant should never have to gift to themselves");
             }
         }
     }
