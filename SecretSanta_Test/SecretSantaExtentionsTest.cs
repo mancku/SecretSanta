@@ -9,9 +9,7 @@ namespace SecretSanta_Test
     [TestClass]
     public class SecretSantaExtentionsTest
     {
-
         private readonly Random Randomizer = new Random(DateTime.Now.Millisecond);
-
         private IList<Participant> testList;
 
         [TestInitialize]
@@ -20,7 +18,13 @@ namespace SecretSanta_Test
             this.testList = new List<Participant>();
             for (var i = 0; i < this.Randomizer.Next(5, 9); i++)
             {
-                this.testList.Add(new Participant { FirstName = $"{Faker.Name.First()} {i}", LastName = Faker.Name.Last() });
+                this.testList.Add(new Participant
+                {
+                    FirstName = $"{Faker.Name.First()} {i}",
+                    LastName = Faker.Name.Last(),
+                    EMailAddress = Faker.Internet.FreeEmail(),
+                    PhoneNumber = Faker.Phone.Number()
+                });
             }
         }
 
@@ -62,28 +66,29 @@ namespace SecretSanta_Test
         {
             var result = this.testList.GetPermutations().ToList();
 
-            for (var current = 0; current < result.Count; current++)
+            for (var currentIndex = 0; currentIndex < result.Count; currentIndex++)
             {
-                for (var compare = current + 1; compare < result.Count; compare++)
+                for (var nextIndex = currentIndex + 1; nextIndex < result.Count; nextIndex++)
                 {
-                    Assert.AreEqual(result[current].Count, result[compare].Count, "All lists should have the same number of elements");
-                    this.CheckOrderingIsDifferent(result[current], result[compare]);
+                    var current = result[currentIndex];
+                    var next = result[nextIndex];
+                    Assert.AreEqual(current.Count, next.Count, "All lists should have the same number of elements");
+                    this.CheckOrderingIsDifferent(current, next);
                 }
             }
         }
 
-        private void CheckOrderingIsDifferent<T>(IList<T> first, IList<T> second)
+        private void CheckOrderingIsDifferent<T>(IList<T> current, IList<T> next)
         {
             var differenceDetected = false;
-            for (var i = 0; i < first.Count; i++)
+            for (var i = 0; i < current.Count; i++)
             {
-                if (first[i].Equals(second[i]))
+                if (!current[i].Equals(next[i]))
                 {
                     differenceDetected = true;
                     break;
                 }
             }
-
             Assert.IsTrue(differenceDetected, "No difference was found");
         }
 
