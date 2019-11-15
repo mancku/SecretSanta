@@ -9,6 +9,8 @@ namespace SecretSanta_Test
     [TestClass]
     public class SecretSantaGeneratorTest : BaseSecretSantaTest
     {
+        private IDictionary<Participant, Participant> banned;
+
         [TestMethod]
         public void SecretSanta_Generate_ReturnsASet()
         {
@@ -91,6 +93,11 @@ namespace SecretSanta_Test
 
         protected override void SpecificTestSetup()
         {
+            this.banned = new Dictionary<Participant, Participant>
+            {
+                {this.participants[0], this.participants[2]},
+                {this.participants[1], this.participants[3]}
+            };
         }
     }
 }
