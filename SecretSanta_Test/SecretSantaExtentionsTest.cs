@@ -1,36 +1,24 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SecretSanta.Extentions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-using SecretSanta.Extentions;
 
 namespace SecretSanta_Test
 {
     [TestClass]
-    public class SecretSantaExtentionsTest
+    public class SecretSantaExtentionsTest : BaseSecretSantaTest
     {
-        private IList<Participant> testList;
-
-        [TestInitialize]
-        public void SetUp()
-        {
-            testList = new List<Participant>();
-            testList.Add(new Participant() { FirstName = "Name 1", LastName = "Last" });
-            testList.Add(new Participant() { FirstName = "Name 2", LastName = "Last" });
-            testList.Add(new Participant() { FirstName = "Name 3", LastName = "Last" });
-            testList.Add(new Participant() { FirstName = "Name 4", LastName = "Last" });
-            testList.Add(new Participant() { FirstName = "Name 5", LastName = "Last" });
-        }
+        protected IDictionary<Participant, Participant> banned;
 
         [TestMethod]
         public void Helpers_GetShuffle_AllReturned_1000Tries()
         {
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000; i++)
             {
-                var result = testList.GetShuffle();
+                var result = this.participants.GetShuffle();
 
-                foreach (var a in testList)
+                foreach (var a in this.participants)
                 {
                     Assert.IsTrue(result.Contains(a));
                 }
@@ -40,54 +28,33 @@ namespace SecretSanta_Test
         [TestMethod]
         public void Helpers_GetPermutations_AllPermutationsReturned()
         {
-            var result = testList.GetPermutations().Count();
-            var expected = Factoral(testList.Count());
+            var result = this.participants.GetPermutations().Count();
+            var expected = this.Factoral(this.participants.Count());
 
-            Assert.AreEqual(expected, result, "There should be n! permutations, where n = {0}", testList.Count());
-        }
-
-        private int Factoral(int n)
-        {
-            if (n <= 1)
-                return 1;
-
-            return n * Factoral(n - 1);
+            Assert.AreEqual(expected, result, "There should be n! permutations, where n = {0}", this.participants.Count());
         }
 
         [TestMethod]
         public void Helpers_GetPermutations_AllUnique()
         {
-            var result = testList.GetPermutations().ToList();
+            var result = this.participants.GetPermutations().ToList();
 
-            for (int current = 0; current < result.Count; current++)
+            for (var currentIndex = 0; currentIndex < result.Count; currentIndex++)
             {
-                for (int compare = current + 1; compare < result.Count; compare++)
+                for (var nextIndex = currentIndex + 1; nextIndex < result.Count; nextIndex++)
                 {
-                    Assert.AreEqual(result[current].Count, result[compare].Count, "All lists should have the same number of elements");
-                    CheckOrderingIsDifferent(result[current], result[compare]);
+                    var current = result[currentIndex];
+                    var next = result[nextIndex];
+                    Assert.AreEqual(current.Count, next.Count, "All lists should have the same number of elements");
+                    this.CheckOrderingIsDifferent(current, next);
                 }
             }
-        }
-
-        private void CheckOrderingIsDifferent<T>(IList<T> first, IList<T> second)
-        {
-            bool differenceDetected = false;
-            for (int i = 0; i < first.Count; i++)
-            {
-                if (first[i].Equals(second[i]))
-                {
-                    differenceDetected = true;
-                    break;
-                }
-            }
-
-            Assert.IsTrue(differenceDetected, "No difference was found");
         }
 
         [TestMethod]
         public void Helpers_ToDictionary_ReturnsDictionary()
         {
-            var pairs = GetEnumKVPairs();
+            var pairs = this.GetEnumKVPairs().ToList();
             var result = pairs.ToDictionary();
 
             Assert.AreEqual(pairs.Count(), result.Count);
@@ -98,33 +65,65 @@ namespace SecretSanta_Test
             }
         }
 
+        [TestMethod]
+        public void Helpers_MergeToKeyValuePair_ReturnsValidIEnumerable()
+        {
+            var numberListKeys = new List<int>();
+            var numberListValues = new List<int>();
+            for (var i = 0; i < this.Randomizer.Next(5, 10); i++)
+            {
+                numberListKeys.Add(this.Randomizer.Next(1, 10));
+                numberListValues.Add(this.Randomizer.Next(1, 10));
+            }
+            var result = numberListKeys.MergeToKeyValuePair(numberListValues).ToList();
+
+            Assert.AreEqual(numberListKeys.Count, numberListValues.Count, result.Count(), "Zipped list should eb same length");
+
+            for (var i = 0; i < result.Count; i++)
+            {
+                Assert.AreEqual(result[i].Key, numberListKeys[i], "Values did not match");
+                Assert.AreEqual(result[i].Value, numberListValues[i], "Values did not match");
+            }
+        }
+
+        private void CheckOrderingIsDifferent<T>(IList<T> current, IList<T> next)
+        {
+            var differenceDetected = current.Where((element, index) => !element.Equals(next[index])).Any();
+            Assert.IsTrue(differenceDetected, "No difference was found");
+        }
+
         private IEnumerable<KeyValuePair<Participant, Participant>> GetEnumKVPairs()
         {
-            for (int i = 0; i < testList.Count; i++)
+            for (var i = 0; i < this.participants.Count; i++)
             {
-                if (i < testList.Count - 1)
+                if (i < this.participants.Count - 1)
                 {
-                    yield return new KeyValuePair<Participant, Participant>(testList[i], testList[i + 1]);
+                    yield return new KeyValuePair<Participant, Participant>(this.participants[i], this.participants[i + 1]);
                 }
                 else
                 {
-                    yield return new KeyValuePair<Participant, Participant>(testList[i], testList[0]);
+                    yield return new KeyValuePair<Participant, Participant>(this.participants[i], this.participants[0]);
                 }
             }
         }
 
-        [TestMethod]
-        public void Helpers_ZipToKV_ReturnsValidZip()
+        private int Factoral(int n)
         {
-            var numberList = new List<int>() { 1, 2, 3, 4, 5 };
-            var result = numberList.ZipToKV(numberList);
-
-            Assert.AreEqual(numberList.Count, result.Count(), "Zipped list should eb same length");
-
-            foreach (var pair in result)
+            if (n <= 1)
             {
-                Assert.AreEqual(pair.Key, pair.Value, "Values did not match");
+                return 1;
             }
+
+            return n * this.Factoral(n - 1);
+        }
+
+        protected override void SpecificTestSetup()
+        {
+            this.banned = new Dictionary<Participant, Participant>
+            {
+                {this.participants[0], this.participants[2]},
+                {this.participants[1], this.participants[3]}
+            };
         }
     }
 }
