@@ -80,15 +80,7 @@ namespace SecretSanta_Test
 
         private void CheckOrderingIsDifferent<T>(IList<T> current, IList<T> next)
         {
-            var differenceDetected = false;
-            for (var i = 0; i < current.Count; i++)
-            {
-                if (!current[i].Equals(next[i]))
-                {
-                    differenceDetected = true;
-                    break;
-                }
-            }
+            var differenceDetected = current.Where((element, index) => !element.Equals(next[index])).Any();
             Assert.IsTrue(differenceDetected, "No difference was found");
         }
 
