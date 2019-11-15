@@ -51,16 +51,6 @@ namespace SecretSanta_Test
             Assert.AreEqual(expected, result, "There should be n! permutations, where n = {0}", this.testList.Count());
         }
 
-        private int Factoral(int n)
-        {
-            if (n <= 1)
-            {
-                return 1;
-            }
-
-            return n * this.Factoral(n - 1);
-        }
-
         [TestMethod]
         public void Helpers_GetPermutations_AllUnique()
         {
@@ -78,12 +68,6 @@ namespace SecretSanta_Test
             }
         }
 
-        private void CheckOrderingIsDifferent<T>(IList<T> current, IList<T> next)
-        {
-            var differenceDetected = current.Where((element, index) => !element.Equals(next[index])).Any();
-            Assert.IsTrue(differenceDetected, "No difference was found");
-        }
-
         [TestMethod]
         public void Helpers_ToDictionary_ReturnsDictionary()
         {
@@ -95,21 +79,6 @@ namespace SecretSanta_Test
             foreach (var pair in pairs)
             {
                 Assert.IsTrue(result.Contains(pair));
-            }
-        }
-
-        private IEnumerable<KeyValuePair<Participant, Participant>> GetEnumKVPairs()
-        {
-            for (var i = 0; i < this.testList.Count; i++)
-            {
-                if (i < this.testList.Count - 1)
-                {
-                    yield return new KeyValuePair<Participant, Participant>(this.testList[i], this.testList[i + 1]);
-                }
-                else
-                {
-                    yield return new KeyValuePair<Participant, Participant>(this.testList[i], this.testList[0]);
-                }
             }
         }
 
@@ -132,6 +101,37 @@ namespace SecretSanta_Test
                 Assert.AreEqual(result[i].Key, numberListKeys[i], "Values did not match");
                 Assert.AreEqual(result[i].Value, numberListValues[i], "Values did not match");
             }
+        }
+
+        private void CheckOrderingIsDifferent<T>(IList<T> current, IList<T> next)
+        {
+            var differenceDetected = current.Where((element, index) => !element.Equals(next[index])).Any();
+            Assert.IsTrue(differenceDetected, "No difference was found");
+        }
+
+        private IEnumerable<KeyValuePair<Participant, Participant>> GetEnumKVPairs()
+        {
+            for (var i = 0; i < this.testList.Count; i++)
+            {
+                if (i < this.testList.Count - 1)
+                {
+                    yield return new KeyValuePair<Participant, Participant>(this.testList[i], this.testList[i + 1]);
+                }
+                else
+                {
+                    yield return new KeyValuePair<Participant, Participant>(this.testList[i], this.testList[0]);
+                }
+            }
+        }
+
+        private int Factoral(int n)
+        {
+            if (n <= 1)
+            {
+                return 1;
+            }
+
+            return n * this.Factoral(n - 1);
         }
     }
 }
