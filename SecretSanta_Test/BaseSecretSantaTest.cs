@@ -1,8 +1,8 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SecretSanta;
+using SecretSantaBindingModels;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SecretSanta_Test
 {
