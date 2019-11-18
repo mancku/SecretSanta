@@ -22,12 +22,21 @@ namespace SecretSantaWebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("ExecuteSecretSanta")]
-        public IEnumerable<string> ExecuteSecretSanta(IEnumerable<Participant> participants)
+        [Route("GenerateSecretSanta")]
+        public IEnumerable<string> GenerateSecretSanta(SecretSantaGeneration secretSantaGeneration)
         {
-            return this.SecretSantaGenerator.Generate(participants, true)
+            return this.SecretSantaGenerator.Generate(secretSantaGeneration.Participants,
+                    secretSantaGeneration.ExcludeMutualPairings)
                 .Select(x => $"{x.Key.FullName} --> {x.Value.FullName}")
                 .OrderBy(x => x);
+        }
+
+        [HttpPost]
+        [Route("ExecuteSecretSanta")]
+        public void ExecuteSecretSanta(SecretSantaGeneration secretSantaGeneration)
+        {
+            this.SecretSantaGenerator.Generate(secretSantaGeneration.Participants,
+                    secretSantaGeneration.ExcludeMutualPairings);
         }
     }
 }
