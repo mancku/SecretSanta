@@ -1,9 +1,8 @@
-﻿using SecretSantaBindingModels.ValidationAttributes;
+﻿using SecretSanta.BindingModels.ValidationAttributes;
 using System;
 using System.ComponentModel.DataAnnotations;
-using SecretSanta;
 
-namespace SecretSantaBindingModels
+namespace SecretSanta.BindingModels
 {
     public class Participant : IParticipant, IEquatable<Participant>
     {
