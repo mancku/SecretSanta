@@ -19,7 +19,7 @@ namespace SecretSantaBindingModels
         [MinLength(9, ErrorMessage = "The phone number is too short")]
         public string PhoneNumber { get; set; }
 
-        public string FullName => $"{this.FirstName} {this.LastName}";
+        public string FullName => $"{this.FirstName.Trim()} {this.LastName.Trim()}";
 
         public bool Equals(Participant other)
         {
