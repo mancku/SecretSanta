@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SecretSantaBindingModels;
+using SecretSanta.BindingModels;
 using System.Collections.Generic;
 using System.Linq;
 

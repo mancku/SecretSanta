@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
-namespace SecretSantaBindingModels.ValidationAttributes
+namespace SecretSanta.BindingModels.ValidationAttributes
 {
     public class ValueIsEmailAttribute : ValidationAttribute
     {

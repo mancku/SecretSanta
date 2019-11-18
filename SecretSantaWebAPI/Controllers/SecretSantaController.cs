@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SecretSanta;
-using SecretSantaBindingModels;
+using SecretSanta.BindingModels;
 using System.Collections.Generic;
 using System.Linq;
 

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SecretSantaBindingModels.ValidationAttributes
+namespace SecretSanta.BindingModels.ValidationAttributes
 {
     public class OtherPropertyIsInformedIfThisIsNotAttribute : ValidationAttribute
     {
