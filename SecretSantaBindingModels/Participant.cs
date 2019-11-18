@@ -1,13 +1,25 @@
-﻿using System;
+﻿using SecretSantaBindingModels.ValidationAttributes;
+using System;
+using System.ComponentModel.DataAnnotations;
 
-namespace SecretSanta_Test
+namespace SecretSantaBindingModels
 {
     public class Participant : IEquatable<Participant>
     {
+        [Required(AllowEmptyStrings = false)]
         public string FirstName { get; set; }
+
+        [MinLength(2, ErrorMessage = "The Last Name is too short")]
         public string LastName { get; set; }
+
+        [ValueIsEmail]
+        [OtherPropertyIsInformedIfThisIsNot("PhoneNumber",
+             ErrorMessage = "The 'PhoneNumber' field must contain information when the field 'EMailAddress' is empty.")]
         public string EMailAddress { get; set; }
+        [MinLength(9, ErrorMessage = "The phone number is too short")]
         public string PhoneNumber { get; set; }
+
+        public string FullName => $"{this.FirstName.Trim()} {this.LastName.Trim()}";
 
         public bool Equals(Participant other)
         {

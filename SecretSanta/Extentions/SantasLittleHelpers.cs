@@ -6,7 +6,7 @@ namespace SecretSanta.Extentions
 {
     public static class SantasLittleHelpers
     {
-        public static IList<T> GetShuffle<T>(this IList<T> source)
+        public static IList<T> GetShuffle<T>(this IEnumerable<T> source)
         {
             var rand = new Random(DateTime.Now.Millisecond);
             return source.OrderBy(x => rand.Next()).ToList();
