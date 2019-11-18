@@ -1,10 +1,11 @@
 ﻿using SecretSantaBindingModels.ValidationAttributes;
 using System;
 using System.ComponentModel.DataAnnotations;
+using SecretSanta;
 
 namespace SecretSantaBindingModels
 {
-    public class Participant : IEquatable<Participant>
+    public class Participant : IParticipant, IEquatable<Participant>
     {
         [Required(AllowEmptyStrings = false)]
         public string FirstName { get; set; }
@@ -14,8 +15,8 @@ namespace SecretSantaBindingModels
 
         [ValueIsEmail]
         [OtherPropertyIsInformedIfThisIsNot("PhoneNumber",
-             ErrorMessage = "The 'PhoneNumber' field must contain information when the field 'EMailAddress' is empty.")]
-        public string EMailAddress { get; set; }
+             ErrorMessage = "The 'PhoneNumber' field must contain information when the field 'Email' is empty.")]
+        public string Email { get; set; }
         [MinLength(9, ErrorMessage = "The phone number is too short")]
         public string PhoneNumber { get; set; }
 
@@ -35,7 +36,7 @@ namespace SecretSantaBindingModels
 
             return string.Equals(this.FirstName, other.FirstName)
                    && string.Equals(this.LastName, other.LastName)
-                   && string.Equals(this.EMailAddress, other.EMailAddress)
+                   && string.Equals(this.Email, other.Email)
                    && string.Equals(this.PhoneNumber, other.PhoneNumber);
         }
 
@@ -61,7 +62,7 @@ namespace SecretSantaBindingModels
             {
                 var hashCode = (this.FirstName != null ? this.FirstName.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (this.LastName != null ? this.LastName.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (this.EMailAddress != null ? this.EMailAddress.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (this.Email != null ? this.Email.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (this.PhoneNumber != null ? this.PhoneNumber.GetHashCode() : 0);
                 return hashCode;
             }
@@ -70,7 +71,7 @@ namespace SecretSantaBindingModels
         public override string ToString()
         {
             return
-                $"Full name: {this.FirstName} {this.LastName}, Email: {this.EMailAddress}, Phone: {this.PhoneNumber}";
+                $"Full name: {this.FirstName} {this.LastName}, Email: {this.Email}, Phone: {this.PhoneNumber}";
         }
     }
 }

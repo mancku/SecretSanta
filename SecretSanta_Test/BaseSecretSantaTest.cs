@@ -23,7 +23,7 @@ namespace SecretSanta_Test
                 {
                     FirstName = $"{Faker.Name.First()} {i}",
                     LastName = Faker.Name.Last(),
-                    EMailAddress = Faker.Internet.FreeEmail(),
+                    Email = Faker.Internet.FreeEmail(),
                     PhoneNumber = Faker.Phone.Number()
                 });
             }
