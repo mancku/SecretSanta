@@ -1,14 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SecretSanta
 {
     public interface ISecretSantaGenerator
     {
-        IDictionary<T, T> Generate<T>(IEnumerable<T> participants, bool excludeMutualPairing = false);
+        IDictionary<T, T> Generate<T>(IEnumerable<T> participants, bool excludeMutualPairing = false)
+            where T : IParticipant, IEquatable<T>;
         IDictionary<T, T> Generate<T>(IEnumerable<T> participants, IDictionary<T, T> bannedPairings,
-            bool excludeMutualPairing = false);
-        IEnumerable<IDictionary<T, T>> GenerateAll<T>(IEnumerable<T> participants, bool excludeMutualPairing = false);
+            bool excludeMutualPairing = false)
+            where T : IParticipant, IEquatable<T>;
+        IEnumerable<IDictionary<T, T>> GenerateAll<T>(IEnumerable<T> participants, bool excludeMutualPairing = false)
+            where T : IParticipant, IEquatable<T>;
         IEnumerable<IDictionary<T, T>> GenerateAll<T>(IEnumerable<T> participants, IDictionary<T, T> bannedPairings,
-            bool excludeMutualPairing = false);
+            bool excludeMutualPairing = false)
+            where T : IParticipant, IEquatable<T>;
+
     }
 }
