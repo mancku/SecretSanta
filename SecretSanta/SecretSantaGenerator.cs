@@ -8,11 +8,13 @@ namespace SecretSanta
     public class SecretSantaGenerator : ISecretSantaGenerator
     {
         public IDictionary<T, T> Generate<T>(IEnumerable<T> participants, bool excludeMutualPairing = false)
+        where T : IParticipant, IEquatable<T>
         {
             return this.Generate(participants, new Dictionary<T, T>(), excludeMutualPairing);
         }
 
         public IDictionary<T, T> Generate<T>(IEnumerable<T> participants, IDictionary<T, T> bannedPairings, bool excludeMutualPairing = false)
+            where T : IParticipant, IEquatable<T>
         {
             var results = this.GenerateResults(participants, bannedPairings, true, excludeMutualPairing);
             try
@@ -26,17 +28,20 @@ namespace SecretSanta
         }
 
         public IEnumerable<IDictionary<T, T>> GenerateAll<T>(IEnumerable<T> participants, bool excludeMutualPairing = false)
+            where T : IParticipant, IEquatable<T>
         {
             return this.GenerateAll(participants, new Dictionary<T, T>(), excludeMutualPairing);
         }
 
         public IEnumerable<IDictionary<T, T>> GenerateAll<T>(IEnumerable<T> participants, IDictionary<T, T> bannedPairings, bool excludeMutualPairing = false)
+            where T : IParticipant, IEquatable<T>
         {
             return this.GenerateResults(participants, bannedPairings, false, excludeMutualPairing);
         }
 
         private IEnumerable<IDictionary<T, T>> GenerateResults<T>(IEnumerable<T> participants, IDictionary<T, T> bannedPairings,
             bool getJustOneResult, bool excludeMutualPairing = false)
+            where T : IParticipant, IEquatable<T>
         {
             participants = participants.ToList();
             var to = participants.GetShuffle();
@@ -56,6 +61,7 @@ namespace SecretSanta
         }
 
         private bool PairingIsValid<T>(IDictionary<T, T> bannedPairings, IDictionary<T, T> permutations, bool excludeMutualPairing)
+            where T : IParticipant, IEquatable<T>
         {
             var result = !permutations.Any(r => r.Key.Equals(r.Value) || (bannedPairings?.Contains(r) ?? false));
 
