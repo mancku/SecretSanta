@@ -57,7 +57,7 @@ namespace SecretSanta
 
         private bool PairingIsValid<T>(IDictionary<T, T> bannedPairings, IDictionary<T, T> permutations, bool excludeMutualPairing)
         {
-            var result = !permutations.Any(r => r.Key.Equals(r.Value) || bannedPairings.Contains(r));
+            var result = !permutations.Any(r => r.Key.Equals(r.Value) || (bannedPairings?.Contains(r) ?? false));
 
             if (!excludeMutualPairing)
             {
