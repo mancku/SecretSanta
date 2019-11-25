@@ -14,29 +14,30 @@ namespace SecretSantaWebAPI.Controllers
 
         private readonly ILogger<SecretSantaController> _logger;
         private readonly ISecretSantaGenerator SecretSantaGenerator;
+        private readonly ISecretSantaService SecretSantaService;
 
-        public SecretSantaController(ILogger<SecretSantaController> logger, ISecretSantaGenerator secretSantaGenerator)
+        public SecretSantaController(ILogger<SecretSantaController> logger, ISecretSantaGenerator secretSantaGenerator, ISecretSantaService secretSantaService)
         {
             this._logger = logger;
             this.SecretSantaGenerator = secretSantaGenerator;
+            this.SecretSantaService = secretSantaService;
         }
 
         [HttpPost]
         [Route("GenerateSecretSanta")]
-        public IEnumerable<string> GenerateSecretSanta(SecretSantaGeneration secretSantaGeneration)
+        public IEnumerable<string> GenerateSecretSanta(SecretSantaParticipants secretSantaGeneration)
         {
             return this.SecretSantaGenerator.Generate(secretSantaGeneration.Participants,
                     secretSantaGeneration.ExcludeMutualPairings)
-                .Select(x => $"{x.Key.FullName} --> {x.Value.FullName}")
+                .Select(x => $"{x.Key.Name} --> {x.Value.Name}")
                 .OrderBy(x => x);
         }
 
         [HttpPost]
         [Route("ExecuteSecretSanta")]
-        public void ExecuteSecretSanta(SecretSantaGeneration secretSantaGeneration)
+        public void ExecuteSecretSanta(SecretSantaEvent secretSantaEvent)
         {
-            this.SecretSantaGenerator.Generate(secretSantaGeneration.Participants,
-                    secretSantaGeneration.ExcludeMutualPairings);
+            this.SecretSantaService.ExecuteSecretSanta(secretSantaEvent);
         }
     }
 }
