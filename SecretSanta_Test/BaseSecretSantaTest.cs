@@ -21,8 +21,7 @@ namespace SecretSanta_Test
             {
                 this.participants.Add(new Participant
                 {
-                    FirstName = $"{Faker.Name.First()} {i}",
-                    LastName = Faker.Name.Last(),
+                    Name = $"{Faker.Name.First()} {i}",
                     Email = Faker.Internet.FreeEmail(),
                     PhoneNumber = Faker.Phone.Number()
                 });
