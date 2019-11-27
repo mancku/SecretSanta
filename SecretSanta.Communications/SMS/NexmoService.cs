@@ -1,28 +1,28 @@
 ﻿using SecretSanta.BindingModels;
 using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
 using Nexmo.Api;
 using Nexmo.Api.Request;
 
 namespace SecretSanta.Communications.SMS
 {
-    public class NexmoService : ISenderService
+    public class NexmoService : SenderService
     {
         private Client NexmoClient { get; }
-        public bool CanBeUsed { get; }
 
-        public NexmoService(string apiKey, string apiSecret)
+        public NexmoService(IConfiguration configuration)
+            : base(configuration,
+                "Communications:Nexmo:ApiKey",
+                "Communications:Nexmo:ApiSecret")
         {
-            this.CanBeUsed = !string.IsNullOrWhiteSpace(apiKey) && !string.IsNullOrWhiteSpace(apiSecret);
-
             this.NexmoClient = new Client(new Credentials
             {
-                ApiKey = apiKey,
-                ApiSecret = apiSecret,
+                ApiKey = this.Configuration["Communications:Nexmo:ApiKey"],
+                ApiSecret = this.Configuration["Communications:Nexmo:ApiSecret"],
             });
         }
 
-        public void Send<T>(string languageCode, T sender, T receiver)
-            where T : Participant
+        public override void Send<T>(string languageCode, T sender, T receiver)
         {
             var message = this.GetTextMessageText<T>(languageCode, receiver.Name);
             var results = this.NexmoClient.SMS.Send(new global::Nexmo.Api.SMS.SMSRequest

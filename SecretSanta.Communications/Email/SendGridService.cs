@@ -1,33 +1,31 @@
-﻿using SecretSanta.BindingModels;
+﻿using Microsoft.Extensions.Configuration;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
 
 namespace SecretSanta.Communications.Email
 {
-    public class SendGridService : ISenderService
+    public class SendGridService : SenderService
     {
         private SendGridClient SendGrid { get; }
         private EmailAddress SenderEmailAddress { get; }
-        private string TemplateId { get; }
-        public bool CanBeUsed { get; }
 
-        public SendGridService(string apiKey, string senderEmailAddress, string templateId)
+        public SendGridService(IConfiguration configuration)
+            : base(configuration,
+                "Communications:SendGrid:ApiKey",
+                "Communications:SendGrid:SenderEmailAddress")
         {
-            this.CanBeUsed = !string.IsNullOrWhiteSpace(apiKey) && !string.IsNullOrWhiteSpace(senderEmailAddress);
-            this.SendGrid = new SendGridClient(apiKey);
-            this.SenderEmailAddress = new EmailAddress(senderEmailAddress);
-            this.TemplateId = templateId;
+            this.SendGrid = new SendGridClient(this.Configuration["Communications:SendGrid:ApiKey"]);
+            this.SenderEmailAddress = new EmailAddress(this.Configuration["Communications:SendGrid:SenderEmailAddress"]);
         }
 
-        public void Send<T>(string languageCode, T sender, T receiver)
-            where T : Participant
+        public override void Send<T>(string languageCode, T sender, T receiver)
         {
             this.SenderEmailAddress.Name = "SECRET SANTA";
 
             var msg = new SendGridMessage
             {
-                TemplateId = this.TemplateId,
+                TemplateId = this.Configuration["Communications:SendGrid:TemplateId"],
                 From = this.SenderEmailAddress,
 
                 // Not needed if using templates, as the template forces us to set a subject

@@ -29,11 +29,8 @@ namespace SecretSantaWebAPI
             services.AddScoped<ISecretSantaService, SecretSantaService>();
 
             services.AddScoped<ICommunicationsService, CommunicationsService>();
-            services.AddScoped<NexmoService>(x => new NexmoService(this.Configuration["Communications:Nexmo:ApiKey"],
-                this.Configuration["Communications:Nexmo:ApiSecret"]));
-            services.AddScoped<SendGridService>(x => new SendGridService(this.Configuration["Communications:SendGrid:ApiKey"],
-                this.Configuration["Communications:SendGrid:SenderEmailAddress"],
-                this.Configuration["Communications:SendGrid:TemplateId"]));
+            services.AddScoped<NexmoService>(x => new NexmoService(this.Configuration));
+            services.AddScoped<SendGridService>(x => new SendGridService(this.Configuration));
 
             services.AddScoped<SenderServiceResolver>(serviceProvider => key =>
             {
