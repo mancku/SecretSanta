@@ -5,9 +5,11 @@ using Nexmo.Api.Request;
 
 namespace SecretSanta.Communications.SMS
 {
-    public class NexmoService : ICommunicationService
+    public class NexmoService : ISenderService
     {
         private Client NexmoClient { get; }
+        public bool CanBeUsed { get; }
+
         public NexmoService(string apiKey, string apiSecret)
         {
             this.CanBeUsed = !string.IsNullOrWhiteSpace(apiKey) && !string.IsNullOrWhiteSpace(apiSecret);
@@ -19,16 +21,14 @@ namespace SecretSanta.Communications.SMS
             });
         }
 
-        public bool CanBeUsed { get; }
-
-        public void Send<T>(string languageCode, KeyValuePair<T, T> match)
+        public void Send<T>(string languageCode, T sender, T receiver)
             where T : Participant
         {
-            var message = this.GetTextMessageText<T>(languageCode, match.Value.Name);
+            var message = this.GetTextMessageText<T>(languageCode, receiver.Name);
             var results = this.NexmoClient.SMS.Send(new global::Nexmo.Api.SMS.SMSRequest
             {
                 from = languageCode == "es" ? "INVISIBLE" : "SECRETSANTA",
-                to = match.Key.PhoneNumber,
+                to = sender.PhoneNumber,
                 text = message
             });
         }
