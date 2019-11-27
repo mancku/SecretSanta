@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using SendGrid;
+﻿using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
 
@@ -10,22 +9,26 @@ namespace SecretSanta.Communications.Email
         private SendGridClient SendGrid { get; }
         private EmailAddress SenderEmailAddress { get; }
 
-        public SendGridService(IConfiguration configuration)
-            : base(configuration,
-                "Communications:SendGrid:ApiKey",
-                "Communications:SendGrid:SenderEmailAddress")
+        public SendGridService()
+            : base("Email", "SendGridSettings",
+                "ApiKey",
+                "SenderEmailAddress")
         {
-            this.SendGrid = new SendGridClient(this.Configuration["Communications:SendGrid:ApiKey"]);
-            this.SenderEmailAddress = new EmailAddress(this.Configuration["Communications:SendGrid:SenderEmailAddress"]);
+            if (this.CanBeUsed)
+            {
+                this.SendGrid = new SendGridClient(this.Configuration["ApiKey"]);
+                this.SenderEmailAddress = new EmailAddress(this.Configuration["SenderEmailAddress"]);
+            }
         }
 
-        public override void Send<T>(string languageCode, T sender, T receiver)
+        protected override void SendToParticipant<T>(string languageCode, T sender, T receiver)
         {
-            this.SenderEmailAddress.Name = "SECRET SANTA";
+            var translations = this.GetTranslationConfiguration<SendGridTranslation>(languageCode);
+            this.SenderEmailAddress.Name = translations.SenderName;
 
             var msg = new SendGridMessage
             {
-                TemplateId = this.Configuration["Communications:SendGrid:TemplateId"],
+                TemplateId = translations.TemplateId,
                 From = this.SenderEmailAddress,
 
                 // Not needed if using templates, as the template forces us to set a subject

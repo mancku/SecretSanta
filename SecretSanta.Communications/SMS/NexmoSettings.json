@@ -1,0 +1,18 @@
+{
+  "ApiKey": "SET YOUR API Key ON THE NexmoSettings{Environment}.Json",
+  "ApiSecret": "SET YOUR API Secret ON THE NexmoSettings{Environment}.Json",
+  // LanguageCode should be a value in 
+  // System.Globalization.CultureInfo.GetCultures(CultureTypes.AllCultures).Select(x=> x.Name);
+  "Translations": [
+    {
+      "LanguageCode": "xx",
+      "SenderName": "SET YOUR Sender name ON THE NexmoSettings{Environment}.Json",
+      "Message": "SET YOUR Message ON THE NexmoSettings{Environment}.Json"
+    },
+    {
+      "LanguageCode": "yy",
+      "SenderName": "SET YOUR Sender name ON THE NexmoSettings{Environment}.Json",
+      "Message": "SET YOUR Message ON THE NexmoSettings{Environment}.Json"
+    }
+  ]
+}

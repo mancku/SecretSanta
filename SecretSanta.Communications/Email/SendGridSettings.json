@@ -1,0 +1,19 @@
+{
+  "ApiKey": "SET YOUR API Key ON THE SendGridSettings{Environment}.Json",
+  "SenderEmailAddress": "SET YOUR Email Address ON THE SendGridSettings{Environment}.Json",
+  "TemplateId": "SET YOUR Template Id ON THE SendGridSettings{Environment}.Json",
+  // LanguageCode should be a value in 
+  // System.Globalization.CultureInfo.GetCultures(CultureTypes.AllCultures).Select(x=> x.Name);
+  "Translations": [
+    {
+      "LanguageCode" : "en",
+      "SenderName": "Secret Santa",
+      "TemplateId": "SET YOUR Template Id ON THE SendGridSettings{Environment}.Json"
+    },
+    {
+      "LanguageCode": "es",
+      "SenderName": "Amigo Invisible",
+      "TemplateId": "SET YOUR Template Id ON THE SendGridSettings{Environment}.Json"
+    }
+  ]
+}
