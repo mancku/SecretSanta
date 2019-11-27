@@ -40,9 +40,9 @@ bld/
 Generated\ Files/
 
 # Config files
-**/appsettings.development.json
-**/appsettings.staging.json
-**/appsettings.production.json
+**/*.development.json
+**/*.staging.json
+**/*.production.json
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
