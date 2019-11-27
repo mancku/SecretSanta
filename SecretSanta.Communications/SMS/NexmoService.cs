@@ -1,8 +1,7 @@
-﻿using SecretSanta.BindingModels;
-using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Nexmo.Api;
 using Nexmo.Api.Request;
+using SecretSanta.BindingModels;
 
 namespace SecretSanta.Communications.SMS
 {
@@ -10,37 +9,31 @@ namespace SecretSanta.Communications.SMS
     {
         private Client NexmoClient { get; }
 
-        public NexmoService(IConfiguration configuration)
-            : base(configuration,
-                "Communications:Nexmo:ApiKey",
-                "Communications:Nexmo:ApiSecret")
+        public NexmoService()
+            : base("SMS", "NexmoSettings",
+                "ApiKey",
+                "ApiSecret")
         {
-            this.NexmoClient = new Client(new Credentials
-            {
-                ApiKey = this.Configuration["Communications:Nexmo:ApiKey"],
-                ApiSecret = this.Configuration["Communications:Nexmo:ApiSecret"],
-            });
-        }
 
-        public override void Send<T>(string languageCode, T sender, T receiver)
-        {
-            var message = this.GetTextMessageText<T>(languageCode, receiver.Name);
-            var results = this.NexmoClient.SMS.Send(new global::Nexmo.Api.SMS.SMSRequest
+            if (this.CanBeUsed)
             {
-                from = languageCode == "es" ? "INVISIBLE" : "SECRETSANTA",
+                this.NexmoClient = new Client(new Credentials
+                {
+                    ApiKey = this.Configuration["ApiKey"],
+                    ApiSecret = this.Configuration["ApiSecret"],
+                });
+            }
+        }
+        protected override void SendToParticipant<T>(string languageCode, T sender, T receiver)
+        {
+            var translation = this.GetTranslationConfiguration<NexmoTranslation>(languageCode);
+            var message = string.Format(translation.Message, receiver.Name);
+            var results = this.NexmoClient.SMS.Send(new Nexmo.Api.SMS.SMSRequest
+            {
+                from = translation.SenderName,
                 to = sender.PhoneNumber,
-                text = message
+                text = message,
             });
-        }
-
-        private string GetTextMessageText<T>(string languageCode, string presentReceiverName)
-            where T : Participant
-        {
-            var message = languageCode == "es"
-                ? "Tu regalo será para:"
-                : "Your present will be for:";
-
-            return $"{message} {presentReceiverName}";
         }
     }
 }
