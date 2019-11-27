@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -5,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SecretSanta;
 using SecretSanta.Communications;
+using SecretSanta.Communications.Email;
 using SecretSanta.Communications.SMS;
 
 namespace SecretSantaWebAPI
@@ -27,8 +29,24 @@ namespace SecretSantaWebAPI
             services.AddScoped<ISecretSantaService, SecretSantaService>();
 
             services.AddScoped<ICommunicationsService, CommunicationsService>();
-            services.AddScoped<ICommunicationService>(x => new NexmoService(this.Configuration["Communications:Nexmo:ApiKey"],
+            services.AddScoped<NexmoService>(x => new NexmoService(this.Configuration["Communications:Nexmo:ApiKey"],
                 this.Configuration["Communications:Nexmo:ApiSecret"]));
+            services.AddScoped<SendGridService>(x => new SendGridService(this.Configuration["Communications:SendGrid:ApiKey"],
+                this.Configuration["Communications:SendGrid:SenderEmailAddress"],
+                this.Configuration["Communications:SendGrid:TemplateId"]));
+
+            services.AddScoped<SenderServiceResolver>(serviceProvider => key =>
+            {
+                switch (key)
+                {
+                    case SenderType.Email:
+                        return serviceProvider.GetService<SendGridService>();
+                    case SenderType.SMS:
+                        return serviceProvider.GetService<NexmoService>();
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(key), key, null);
+                }
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
