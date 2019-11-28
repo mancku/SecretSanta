@@ -1,6 +1,7 @@
 ﻿using SecretSanta.BindingModels;
 using SecretSanta.Communications;
-using SecretSanta.Communications.SMS;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SecretSanta
 {
@@ -16,10 +17,15 @@ namespace SecretSanta
         }
         public void ExecuteSecretSanta(SecretSantaEvent secretSantaEvent)
         {
-            var result = this.SecretSantaGenerator.Generate(secretSantaEvent.GenerationInfo.Participants,
-                secretSantaEvent.GenerationInfo.ExcludeMutualPairings);
+            var bannedPairings =
+                (secretSantaEvent.ParticipantsInfo.BannedPairings ?? new List<BannedPairing>())
+                .ToDictionary(k => k.Participant1, v => v.Participant2);
 
-            this.CommunicationsService.SendSecretSantas(secretSantaEvent.LanguageCode, result);
+            var result = this.SecretSantaGenerator.Generate(secretSantaEvent.ParticipantsInfo.Participants,
+                bannedPairings,
+                secretSantaEvent.ParticipantsInfo.ExcludeMutualPairings);
+
+            this.CommunicationsService.SendSecretSantas(secretSantaEvent.LanguageCode, result, secretSantaEvent.CustomMessage);
         }
     }
 }

@@ -39,17 +39,17 @@ namespace SecretSanta.Communications
             this.Configuration = configurationBuilder.Build();
         }
 
-        public void Send<T>(string languageCode, T sender, T receiver)
+        public void Send<T>(string languageCode, T sender, T receiver, string customMessage)
             where T : Participant
         {
             languageCode = !string.IsNullOrWhiteSpace(languageCode)
                 ? languageCode
                 : DEFAULT_LANGUAGE;
 
-            this.SendToParticipant(languageCode, sender, receiver);
+            this.SendToParticipant(languageCode, sender, receiver, customMessage);
         }
 
-        protected abstract void SendToParticipant<T>(string languageCode, T sender, T receiver)
+        protected abstract void SendToParticipant<T>(string languageCode, T sender, T receiver, string customMessage)
             where T : Participant;
 
         protected T GetTranslationConfiguration<T>(string languageCode)
