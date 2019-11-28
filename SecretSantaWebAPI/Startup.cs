@@ -25,6 +25,8 @@ namespace SecretSantaWebAPI
         {
             services.AddControllers();
 
+            services.AddOpenApiDocument();
+
             services.AddScoped<ISecretSantaGenerator, SecretSantaGenerator>();
             services.AddScoped<ISecretSantaService, SecretSantaService>();
 
@@ -64,6 +66,9 @@ namespace SecretSantaWebAPI
             {
                 endpoints.MapControllers();
             });
+
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
         }
     }
 }
