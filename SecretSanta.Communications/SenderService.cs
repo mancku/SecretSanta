@@ -9,6 +9,8 @@ namespace SecretSanta.Communications
 {
     public abstract class SenderService : ISenderService
     {
+        private const string DEFAULT_LANGUAGE = "en";
+
         protected IConfiguration Configuration;
         public bool CanBeUsed { get; }
 
@@ -42,7 +44,7 @@ namespace SecretSanta.Communications
         {
             languageCode = !string.IsNullOrWhiteSpace(languageCode)
                 ? languageCode
-                : "en";
+                : DEFAULT_LANGUAGE;
 
             this.SendToParticipant(languageCode, sender, receiver);
         }
@@ -60,7 +62,7 @@ namespace SecretSanta.Communications
                 result = translationConfigurations.FirstOrDefault(x => x.LanguageCode == languageCode.Substring(0, 2));
                 if (result == null)
                 {
-                    result = translationConfigurations.FirstOrDefault(x => x.LanguageCode == "en");
+                    result = translationConfigurations.FirstOrDefault(x => x.LanguageCode == DEFAULT_LANGUAGE);
                 }
             }
 
