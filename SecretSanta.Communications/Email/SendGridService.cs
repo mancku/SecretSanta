@@ -21,7 +21,7 @@ namespace SecretSanta.Communications.Email
             }
         }
 
-        protected override void SendToParticipant<T>(string languageCode, T sender, T receiver)
+        protected override void SendToParticipant<T>(string languageCode, T sender, T receiver, string customMessage)
         {
             var translations = this.GetTranslationConfiguration<SendGridTranslation>(languageCode);
             this.SenderEmailAddress.Name = translations.SenderName;
@@ -41,6 +41,7 @@ namespace SecretSanta.Communications.Email
             {
                 receiverName = receiver.Name,
                 senderName = sender.Name,
+                customMessage = customMessage ?? string.Empty
             });
             msg.AddCustomArg("InternalId", Guid.NewGuid().ToString());
 

@@ -24,7 +24,7 @@ namespace SecretSanta.Communications.SMS
                 });
             }
         }
-        protected override void SendToParticipant<T>(string languageCode, T sender, T receiver)
+        protected override void SendToParticipant<T>(string languageCode, T sender, T receiver, string customMessage)
         {
             var translation = this.GetTranslationConfiguration<NexmoTranslation>(languageCode);
             var message = string.Format(translation.Message, receiver.Name);

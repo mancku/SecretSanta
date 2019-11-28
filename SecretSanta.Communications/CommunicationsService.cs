@@ -15,33 +15,33 @@ namespace SecretSanta.Communications
             this.EmailCommunicationService = (SendGridService)senderServiceResolver(SenderType.Email);
         }
 
-        public void SendSecretSantas<T>(string languageCode, IDictionary<T, T> matches)
+        public void SendSecretSantas<T>(string languageCode, IDictionary<T, T> matches, string customMessage)
             where T : Participant
         {
             foreach (var match in matches)
             {
-                this.SendWithSendGrid(languageCode, match);
-                this.SendWithNexmo(languageCode, match);
+                this.SendWithSendGrid(languageCode, match, customMessage);
+                this.SendWithNexmo(languageCode, match, customMessage);
 
                 System.Threading.Thread.Sleep(1100);
             }
         }
 
-        private void SendWithSendGrid<T>(string languageCode, KeyValuePair<T, T> match)
+        private void SendWithSendGrid<T>(string languageCode, KeyValuePair<T, T> match, string customMessage)
             where T : Participant
         {
             if (this.EmailCommunicationService != null && this.EmailCommunicationService.CanBeUsed && !string.IsNullOrWhiteSpace(match.Key.Email))
             {
-                this.EmailCommunicationService.Send(languageCode, match.Key, match.Value);
+                this.EmailCommunicationService.Send(languageCode, match.Key, match.Value, customMessage);
             }
         }
 
-        private void SendWithNexmo<T>(string languageCode, KeyValuePair<T, T> match)
+        private void SendWithNexmo<T>(string languageCode, KeyValuePair<T, T> match, string customMessage)
             where T : Participant
         {
             if (this.SmsCommunicationService != null && this.SmsCommunicationService.CanBeUsed && !string.IsNullOrWhiteSpace(match.Key.PhoneNumber))
             {
-                this.SmsCommunicationService.Send(languageCode, match.Key, match.Value);
+                this.SmsCommunicationService.Send(languageCode, match.Key, match.Value, customMessage);
             }
         }
     }

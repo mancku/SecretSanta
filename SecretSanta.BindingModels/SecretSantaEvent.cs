@@ -8,6 +8,9 @@ namespace SecretSanta.BindingModels
         public string LanguageCode { get; set; }
 
         [Required]
-        public SecretSantaParticipants GenerationInfo { get; set; }
+        public SecretSantaParticipants ParticipantsInfo { get; set; }
+
+        [MinLength(10)]
+        public string CustomMessage { get; set; }
     }
 }

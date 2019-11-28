@@ -12,7 +12,7 @@ namespace SecretSanta.Communications
     public interface ISenderService
     {
         bool CanBeUsed { get; }
-        void Send<T>(string languageCode, T sender, T receiver)
+        void Send<T>(string languageCode, T sender, T receiver, string customMessage)
             where T : Participant;
     }
 }

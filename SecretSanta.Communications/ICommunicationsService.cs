@@ -5,7 +5,7 @@ namespace SecretSanta.Communications
 {
     public interface ICommunicationsService
     {
-        void SendSecretSantas<T>(string languageCode, IDictionary<T, T> matches)
+        void SendSecretSantas<T>(string languageCode, IDictionary<T, T> matches, string message)
             where T : Participant;
     }
 }
