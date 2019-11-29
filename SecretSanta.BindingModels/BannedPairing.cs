@@ -2,7 +2,7 @@
 {
     public class BannedPairing
     {
-        public Participant Participant1 { get; set; }
-        public Participant Participant2 { get; set; }
+        public Participant PresentGiver { get; set; }
+        public Participant PresentReceiver { get; set; }
     }
 }

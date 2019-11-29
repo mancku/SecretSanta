@@ -19,7 +19,7 @@ namespace SecretSanta
         {
             var bannedPairings =
                 (secretSantaEvent.ParticipantsInfo.BannedPairings ?? new List<BannedPairing>())
-                .ToDictionary(k => k.Participant1, v => v.Participant2);
+                .ToDictionary(k => k.PresentGiver, v => v.PresentReceiver);
 
             var result = this.SecretSantaGenerator.Generate(secretSantaEvent.ParticipantsInfo.Participants,
                 bannedPairings,
