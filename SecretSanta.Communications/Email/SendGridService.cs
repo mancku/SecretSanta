@@ -7,29 +7,29 @@ namespace SecretSanta.Communications.Email
     public class SendGridService : SenderService
     {
         private SendGridClient SendGrid { get; }
-        private EmailAddress SenderEmailAddress { get; }
+        private EmailAddress SendGridEmailAddress { get; }
 
         public SendGridService()
             : base("Email", "SendGridSettings",
                 "ApiKey",
-                "SenderEmailAddress")
+                "SendGridEmailAddress")
         {
             if (this.CanBeUsed)
             {
                 this.SendGrid = new SendGridClient(this.Configuration["ApiKey"]);
-                this.SenderEmailAddress = new EmailAddress(this.Configuration["SenderEmailAddress"]);
+                this.SendGridEmailAddress = new EmailAddress(this.Configuration["SendGridEmailAddress"]);
             }
         }
 
         protected override void SendToParticipant<T>(string languageCode, T sender, T receiver, string customMessage)
         {
             var translations = this.GetTranslationConfiguration<SendGridTranslation>(languageCode);
-            this.SenderEmailAddress.Name = translations.SenderName;
+            this.SendGridEmailAddress.Name = translations.SenderName;
 
             var msg = new SendGridMessage
             {
                 TemplateId = translations.TemplateId,
-                From = this.SenderEmailAddress,
+                From = this.SendGridEmailAddress,
 
                 // Not needed if using templates, as the template forces us to set a subject
                 //Subject = "Some subject"
